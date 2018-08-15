@@ -1,6 +1,8 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const swapi = require('./swapi');
 
-app.get('/', (req, res) => res.send('Hello World!'))
+const app = express();
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
+app.get('/people', async (req, res) => res.send(await swapi.fetchPeople(req.query.sortBy)));
+
+app.listen(3000, () => console.log('Example app listening on port 3000!'));
