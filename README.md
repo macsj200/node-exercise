@@ -1,3 +1,6 @@
+# Programmer notes
+I'm using yarn to install express. I'm also on node version v9.6.1 via nvm (OS X).
+
 # node-exercise
 A little exercise using a Star Wars API [https://swapi.co/](https://swapi.co/)
 
