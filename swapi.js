@@ -2,6 +2,8 @@ const request = require('request-promise');
 
 const apiBaseUrl = 'https://swapi.co/api/'
 
+let cachedPeople;
+
 const getAndParse = async (requestUrl) => {
     // Send get request (async/await style)
     const jsonResponse = await request.get(requestUrl);
@@ -15,22 +17,30 @@ const getAndParse = async (requestUrl) => {
 const fetchPeople = async (sortBy = 'name') => {
     // TODO validate sortBy
 
-    // Collect people into array (mutable)
-    let people = [];
+    let people;
 
-    // Initialize request url
-    let requestUrl = apiBaseUrl + 'people';
+    if(cachedPeople) {
+        people = cachedPeople;
 
-    // Loop while has next page
-    while(requestUrl) {
-        const { count, next, results } = await getAndParse(requestUrl);
-        // Tell loop to get next page
-        requestUrl = next;
-        people = people.concat(results);
-        console.log(`fetched ${people.length} of ${count}`);
+        console.log('serving cached people');
+    } else {
+        people = []
+        // Initialize request url
+        let requestUrl = apiBaseUrl + 'people';
+
+        // Loop while has next page
+        while(requestUrl) {
+            const { count, next, results } = await getAndParse(requestUrl);
+            // Tell loop to get next page
+            requestUrl = next;
+            people = people.concat(results);
+            console.log(`fetched ${people.length} of ${count}`);
+        }
+
+        console.log(`Done fetching. Fetched ${people.length}`)
+
+        cachedPeople = people;
     }
-
-    console.log(`Done fetching. Fetched ${people.length}`)
 
     // TODO test sorting
     people = people.sort((personA, personB) => personA[sortBy] - personB[sortBy]);
