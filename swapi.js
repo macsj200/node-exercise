@@ -3,6 +3,7 @@ const request = require('request-promise');
 const apiBaseUrl = 'https://swapi.co/api/'
 
 let cachedPeople;
+let cachedPlanets;
 
 const getAndParse = async (requestUrl) => {
     // Send get request (async/await style)
@@ -34,7 +35,7 @@ const fetchPeople = async (sortBy = 'name') => {
             // Tell loop to get next page
             requestUrl = next;
             people = people.concat(results);
-            console.log(`fetched ${people.length} of ${count}`);
+            console.log(`fetched ${people.length} of ${count} people`);
         }
 
         console.log(`Done fetching. Fetched ${people.length}`)
@@ -59,3 +60,44 @@ const fetchPeople = async (sortBy = 'name') => {
 };
 
 module.exports.fetchPeople = fetchPeople;
+
+const fetchPlanets = async () => {
+    let planets;
+
+    if(cachedPlanets) {
+        planets = cachedPlanets;
+
+        console.log('serving cached planets');
+    } else {
+        planets = []
+        // Initialize request url
+        let requestUrl = apiBaseUrl + 'planets';
+
+        // Loop while has next page
+        while(requestUrl) {
+            const { count, next, results } = await getAndParse(requestUrl);
+            // Tell loop to get next page
+            requestUrl = next;
+            planets = planets.concat(results);
+            console.log(`fetched ${planets.length} of ${count} planets`);
+        }
+
+        console.log(`Done fetching. Fetched ${planets.length}`)
+
+        cachedPlanets = planets;
+
+        for(let planet of planets) {
+            for(let i = 0; i < planet.residents.length; i++) {
+                for(let person of cachedPeople) {
+                    if(person.url === planet.residents[i]) {
+                        planet.residents[i] = person.name;
+                    }
+                }
+            }
+        }
+    }
+
+    return planets;
+};
+
+module.exports.fetchPlanets = fetchPlanets;

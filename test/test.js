@@ -24,7 +24,33 @@ describe('People', function() {
             // const people = JSON.parse(res);
             const people = JSON.parse(res.body);
             // console.log(people.length);
-            assert.equal(people.length, 87);
+            assert.deepEqual(people, require('../people_name.json'));
+            done();
+        });
+    });
+
+    it('should sort people by height', function(done) {
+        const result = request.get('http://localhost:3000/people?sortBy=height', (err, res) => {
+            if (err) {
+                done(err);
+            }
+            // const people = JSON.parse(res);
+            const people = JSON.parse(res.body);
+            // console.log(people.length);
+            assert.deepEqual(people, require('../people_height.json'));
+            done();
+        });
+    });
+
+    it('should sort people by mass', function(done) {
+        const result = request.get('http://localhost:3000/people?sortBy=mass', (err, res) => {
+            if (err) {
+                done(err);
+            }
+            // const people = JSON.parse(res);
+            const people = JSON.parse(res.body);
+            // console.log(people.length);
+            assert.deepEqual(people, require('../people_mass.json'));
             done();
         });
     });
@@ -38,6 +64,42 @@ describe('People', function() {
             const people = JSON.parse(res.body);
             // console.log(people.length);
             assert.equal(people.length, 87);
+            done();
+        });
+    });
+  });
+});
+
+describe('Planets', function() {
+  describe('get planets', function() {
+    it('should get all 61 planets', function(done) {
+        const result = request.get('http://localhost:3000/planets', (err, res) => {
+            if (err) {
+                done(err);
+            }
+            // const people = JSON.parse(res);
+            const planets = JSON.parse(res.body);
+            // console.log(people.length);
+            assert.equal(planets.length, 61);
+            done();
+        });
+    });
+
+    it('should replace people urls with names', function(done) {
+        const result = request.get('http://localhost:3000/planets', (err, res) => {
+            if (err) {
+                done(err);
+            }
+            // const people = JSON.parse(res);
+            const planets = JSON.parse(res.body);
+            // console.log(people.length);
+            for(let planet of planets) {
+                if (planet.residents.length > 0) {
+                    for(let resident of planet.residents) {
+                        assert(resident.indexOf("swapi.co") === -1);
+                    }
+                }
+            }
             done();
         });
     });
