@@ -43,10 +43,19 @@ const fetchPeople = async (sortBy = 'name') => {
     }
 
     // TODO test sorting
-    people = people.sort((personA, personB) => personA[sortBy] - personB[sortBy]);
+    // Make a copy of array to prevent concurrency issues
+    const sortedPeople = [...people].sort((personA, personB) => {
+        if(sortBy === "name") {
+            return personA[sortBy].localeCompare(personB[sortBy]);
+        } else if(sortBy === "height" || sortBy === "mass") {
+            return personA[sortBy] - personB[sortBy];
+        } else {
+            return 0;
+        }
+    });
 
     // TODO test assert(people.length === 87)
-    return people;
+    return sortedPeople;
 };
 
 module.exports.fetchPeople = fetchPeople;
