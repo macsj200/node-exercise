@@ -9,9 +9,10 @@ describe('People', function() {
             if (err) {
                 done(err);
             }
-            const people = JSON.parse(res);
-            console.log(people);
-            // assert.equal(res.length === 87);
+            // const people = JSON.parse(res);
+            const people = JSON.parse(res.body);
+            // console.log(people.length);
+            assert.equal(people.length, 87);
             done();
         });
     });
