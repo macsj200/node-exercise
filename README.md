@@ -1,6 +1,7 @@
 # Getting started
 1. Run `npm install` or `yarn install` to install express
 2. Run `node app.js` to start app
+3. Run `npm test` to run tests (wait until fetching completes)
 
 # Programmer notes
 I'm using yarn to install express. I'm also on node version v9.6.1 via nvm (OS X).
